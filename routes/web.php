@@ -15,3 +15,4 @@ use App\Http\Controllers\zipController;
 */
 
 Route::get('/', [zipController::class, 'index']);
+Route::post('/upload_zip', [zipController::class, 'store'])->name('upload_zip');
