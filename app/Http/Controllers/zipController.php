@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use ZipArchive;
+use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
@@ -13,7 +14,7 @@ class zipController extends Controller
      */
     public function index()
     {
-        return view('welcome');
+        return view('welcome', ['images' => Image::get()]);
     }
 
     /**
@@ -38,7 +39,9 @@ class zipController extends Controller
         $zipFile = $request->file('zip_file');
         $extractedPath = 'extracted/' . uniqid();
 
-        $zip = new ZipArchive;
+        /* open your project in cmd run this command php php -m you will find the zip Module over there in list */
+        $zip = new ZipArchive; //to use this class make sure you have enabled in php env file and must exist in your project
+
         if ($zip->open($zipFile) == true) {
             $zip->extractTo('storage/' . $extractedPath);
             $zip->close();
@@ -47,7 +50,8 @@ class zipController extends Controller
         //move and uploaded files in images folder and save into
         $zipFileName = $zipFile->getClientOriginalName();
         $innerFolderName = pathinfo($zipFileName, PATHINFO_FILENAME);
-        // dd($zipFileName);
+
+        // dd($zipFileName); //zip folder name
 
         $extractedFolderPath = storage_path('app/public/' . $extractedPath . '/');
 
@@ -68,8 +72,14 @@ class zipController extends Controller
             File::move($file->getPathname(), $newfilePath);
 
             //save into database
-            
+            $image = new \App\Models\Image;
+            $image->file_name = $file->getFilename();
+            $image->save();
         }
+
+        //return back
+        File::deleteDirectory(storage_path('app/public/'.$extractedPath));
+        return back();
 
 
         // Now $extractedFolderPath should exist, and you can proceed with your operations.

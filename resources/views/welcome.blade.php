@@ -11,18 +11,29 @@
 </head>
 
 <body>
-<div class="row justify-content-center">
-    <div class="col-sm-6">
-        <form action="{{ route('upload_zip') }}" class="form-inline" enctype="multipart/form-data" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="exampleInputEmail1">Zip File</label>
-                <input type="file" class="form-control" name="zip_file">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-sm-6">
+                <form action="{{ route('upload_zip') }}" class="form-inline" enctype="multipart/form-data"
+                    method="POST">
+                    @csrf
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Zip File</label>
+                        <input type="file" class="form-control" name="zip_file">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+        </div>
+        <div class="row">
+            @foreach ($images as $image)
+                <div class="col-sm-4 p-3">
+                    <img src="{{ asset('storage/images/' . $image->file_name) }}" height="50%" width="50%"
+                        class="rounded" alt="">
+                </div>
+            @endforeach
+        </div>
     </div>
-</div>
 </body>
 
 </html>
